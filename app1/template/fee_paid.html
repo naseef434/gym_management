@@ -1,0 +1,68 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+
+ 
+
+<main role="main" class="main-content">
+    <div class="row">
+      <div class="col-lg-4">
+   </div>
+      <div class="col-lg-4">
+           <!-- alert message-->
+
+           {% for message in messages %}
+           <div class="alert alert-success" id="alert" role="alert">
+             <p>{{message}}</p>
+           </div>
+         {% endfor %}
+  
+         <!--end alert message-->
+      </div>
+      <div class="col-lg-4">
+      </div>
+        <div class="col-md-12 my-4">
+          <h2 class="h4 mb-1">Student Table</h2>
+          <div class="card shadow">
+            <div class="card-body" style="font-size: 12px;">
+              <!-- table -->
+                <table class="table table-hover table-borderless border-v" id="myTable">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>Plan</th>    
+                    <th>Fees Updated</th>
+                    <th>Paid Amount</th>
+                    <th>Balance Amount</th>
+                    <th>Fees Status</th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+               {% for paid in fees_paid%}   
+             
+               <tr>
+                 <td>{{paid.student_id}}</td>
+                 <td>{{paid.student.name}}</td>
+                 <td>{{paid.student.plan.planName}}</td>
+                 <td>{{paid.lastFeePaid}}</td>
+                 <td>{{paid.paidAmount}}</td>
+                 <td>{{paid.balance}}</td>
+                 <td><span class="badge badge-pill badge-success">Paid</span></td>
+               </tr>
+            
+              {% endfor %}
+                </tbody>
+              </table>
+              <!--end table-->
+            </div>
+          </div>
+        </div>
+      </div> <!-- end section -->
+                </main>         
+      
+
+                                 
+{% endblock %}

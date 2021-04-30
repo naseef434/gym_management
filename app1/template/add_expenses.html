@@ -1,0 +1,38 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+{% block content %}
+<main role="main" class="main-content">
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12">
+              <h2 class="h3 mb-0 page-title">Add Expences</h2>
+        </div>
+          </div>
+          <form method="POST" action="{% url 'add_expense' %}">
+            {% csrf_token %}
+            <hr class="my-4">
+         
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="firstname">Expence Name</label>
+                <input type="text" id="firstname" name="exp_name" class="form-control" required>
+              </div>
+            <div class="form-group col-md-3">
+                <label for="inputPhone">Amount</label>
+                <input type="number" class="form-control" name="amount" id="inputPhone" value="0" required>
+              </div>
+              <!-- <div class="form-group col-md-3">
+                <label for="inputPhone">Date</label>
+                <input type="date" class="form-control" name="date" id="inputPhone" value="0" required>
+              </div> -->
+            </div>
+            <hr class="my-4">
+              <div class="col-auto ">
+                <button type = "submit" class = "btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div> <!-- .col-12 -->
+      </div> <!-- .row -->
+    </div> <!-- .container-fluid -->
+  </main>
+{% endblock content %}

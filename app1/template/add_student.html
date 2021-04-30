@@ -1,0 +1,163 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+<main role="main" class="main-content">
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+        
+        <div class="col-12">
+              <h2 class="h3 mb-0 page-title">Add Student</h2>
+        </div>
+          </div>
+          <form method="POST">
+            {% csrf_token %}
+            <hr class="my-4">
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="custom-select">Gender</label>
+                <select class="custom-select gender" id="gender" name="gender">
+                  <option>Male</option>
+                  <option>Female</option>
+                 
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="custom-select">Select Plan</label>
+                <select class="custom-select plan" id="plan" name="plan">
+                 <option></option> 
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="firstname">Name</label>
+                <input type="text"  name="name"  id="name" class="form-control" required>
+              </div>
+            <div class="form-group col-md-4">
+                <label for="inputPhone">Phone</label>
+                <input type="text" class="form-control" name="phone" id="inputPhone" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="inputEmail4">Address</label>
+                <input type="text" class="form-control" name="address" id="inputEmail4">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputEmail4">Age</label>
+                <input type="number" class="form-control" name="age" id="inputEmail4" required>
+              </div>  
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="custom-placeholder">Joining Date</label>
+                <input class="form-control input-placeholder" id="custom-placeholder" name="joiningDate" type="date" required>
+              </div>
+              <div class="form-group col-md-4">
+                  <label for="inputPhone">Payable amount</label>
+                  <input type="text" class="form-control" name="payable_amount" id="payable_amount" readonly>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="inputEmail4">Paid amount</label>
+                  <input type="text" class="form-control paid" name="paidAmount" id="paid_amount" onchange="calculate_balance_amount()">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputPhone">Balance Amount</label>
+                    <input type="text" class="form-control" name="balanceAmount" id="balance_amount">
+                  </div> 
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <label for="inputEmail4">Discription</label>
+                    <textarea class="form-control" name="discription" id="inputEmail4"></textarea>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <br><br>
+                    <button type = "submit" class = "btn btn-danger float-right">Save</button>
+                  </div>
+                  </div>  
+            <hr class="my-4">
+           
+          </form>
+        </div> <!-- .col-12 -->
+      </div> <!-- .row -->
+    </div> <!-- .container-fluid -->
+  
+    </main>
+    
+ <!-- requesting plan based on gender via ajax    -->
+    <script>
+      $("#gender").click(function () {
+        $.ajax({
+          url: '/get_plan/',
+          type: "POST",
+          data: {
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+                'gender': $(this).val()
+              },
+          dataType: 'json',
+          success: function (data) {
+            $("#plan").empty()
+            data.plan.forEach(element => {
+              var option = $('<option></option>').attr("value", element.id).text(element.name);
+              $("#plan").append(option);
+            });
+            
+          }
+        });
+      });  
+    </script>
+<!-- end pland oparation here  -->
+
+<!-- requesting plan feeds and registration fee via ajax -->
+ <script>
+   $(document).click(function(){
+     var gender  = $('#gender').val();
+    
+    $("#plan").click(function () {
+      
+      var plan = $(this).val()
+      
+      var data = {
+            'csrfmiddlewaretoken': '{{csrf_token}}',
+             gender,
+             plan
+            }
+        //console.log(data)
+      $.ajax({
+          url: '/get_price/',
+          type: "POST",
+          data: data,
+          dataType: 'json',
+          success: function (data) {
+            $('#payable_amount').val(data.price);
+            //console.log(data.price)
+            
+          }
+        });
+    });
+  });
+  </script>
+  
+
+ <!-- calculating field balance and  paid amount  -->
+  <script>
+    function calculate_balance_amount(){
+      var payable_amount = document.getElementById("payable_amount").value;
+      var paid_amount = document.getElementById("paid_amount").value;
+      console.log(payable_amount)
+      console.log(paid_amount)
+      var balance = payable_amount - paid_amount
+      document.getElementById("balance_amount").value = balance
+
+    }
+  </script>
+  
+  
+ 
+{% endblock content %}
+

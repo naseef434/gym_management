@@ -1,0 +1,93 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+
+ 
+
+<main role="main" class="main-content">
+    <div class="row">
+      <div class="col-lg-4">
+   </div>
+      <div class="col-lg-4">
+           <!-- alert message-->
+
+           {% for message in messages %}
+           <div class="alert alert-success" id="alert" role="alert">
+             <p>{{message}}</p>
+           </div>
+         {% endfor %}
+  
+         <!--end alert message-->
+      </div>
+      <div class="col-lg-4">
+      </div>
+        <div class="col-md-12 my-4">
+          <h2 class="h4 mb-1">Fee Outstanding</h2>
+          <div class="card shadow">
+            <div class="card-body" style="font-size: 12px;">
+                <div class="form-group col-md-4">
+                    <input type="text"  id="myInput" onkeyup="myFunction()" class="form-control" placeholder="Search Student">
+                  </div>
+              <!-- table -->
+                <table class="table table-hover table-borderless border-v" id="myTable">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>SN</th>
+                    <th>Name</th>
+                    <th>Plan</th>    
+                    <th>Fees Updated</th>
+                    <th>Paid Amount</th>
+                    <th>Balance Amount</th>
+                    <th>Fees Status</th>
+                    <th>Pay</th>
+                   
+                  </tr>
+                </thead>
+                <tbody>
+               {% for unpaid in fee_unpaid%}   
+
+               <tr>
+                 <td>{{unpaid.id}}</td>
+                 <td>{{unpaid.student.name}}</td>
+                 <td>{{unpaid.student.plan.planName}}</td>
+                 <td>{{unpaid.lastFeePaid}}</td>
+                 <td>{{unpaid.paidAmount}}</td>
+                 <td>{{unpaid.balance}}</td>
+                 <td><span class="badge badge-pill badge-warning">pending</span></td>
+                 <td><a href="{% url 'fee_payment_request' unpaid.student.id %}" type="button" class="btn mb-2 btn-info">Balance</a>
+                  <button type="button" class="btn mb-2 btn-dark">Fee</button></td>
+                
+              {% endfor %}
+                </tbody>
+              </table>
+              <!--end table-->
+            </div>
+          </div>
+        </div>
+      </div> <!-- end section -->
+                </main>         
+      
+
+                <script>
+                    function myFunction() {
+                       var input, filter, table, tr, td, i, txtValue;
+                       input = document.getElementById("myInput");
+                       filter = input.value.toUpperCase();
+                       table = document.getElementById("myTable");
+                       tr = table.getElementsByTagName("tr");
+                       for (i = 0; i < tr.length; i++) {
+                           td = tr[i].getElementsByTagName("td")[1];
+                               if (td) {
+                                   txtValue = td.textContent || td.innerText;
+                                     if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                                         tr[i].style.display = "";
+                                     } else {
+                                         tr[i].style.display = "none";
+                                       }
+                               }       
+                       }
+                     }
+                   </script>
+                                                                
+{% endblock %}

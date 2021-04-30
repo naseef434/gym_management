@@ -1,0 +1,88 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+
+<main role="main" class="main-content">
+
+  
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12">
+              <h2 class="h3 mb-0 page-title">Balance Pay</h2>
+        </div>
+          </div>
+          <form method="POST" action="{% url 'fee_paid' fees.student_id%}">
+            {% csrf_token %}
+            <hr class="my-4">
+           
+           
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="firstname">Name</label>
+                <input type="text"  name="name"  id="name" class="form-control" value="{{fees.student.name}}"  required>
+              </div>
+            <div class="form-group col-md-4">
+                <label for="inputPhone">Phone</label>
+                <input type="text" class="form-control" name="phone" id="inputPhone" value="{{fees.student.phone}}" required>
+              </div>
+            </div>
+           
+           
+              <div class="form-row">
+               
+                <div class="form-group col-md-4">
+                    <label for="inputPhone">Previous Balance</label>
+                    <input type="text" class="form-control" name="balanceAmount" value="{{fees.balance}}" id="previous_balance">
+                  </div> 
+                  <div class="form-group col-md-4">
+                    <label for="inputPhone">Paid Amount</label>
+                    <input type="text" class="form-control" name="paid_amount" id="paid_amount" onchange="calculate_balance()" >
+                  </div> 
+                </div>
+     
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputPhone">Balnce Amount</label>
+                    <input type="text" class="form-control" name="balanceAmount" id="balance_amount" >
+                  </div> 
+                  <div class="form-group col-md-4">
+                    <label for="inputPhone">Date</label>
+                    <input type="date" class="form-control" name="date"  >
+                  </div> 
+
+               
+            </div>
+            <div class="form-group col-md-4">
+              <br>
+              <button type = "submit" class = "btn btn-primary float-left">Fee Pay</button>
+            </div>
+          </form>
+        </div> <!-- .col-12 -->
+      </div> <!-- .row -->
+    </div> <!-- .container-fluid -->
+  
+    </main>
+
+    <script>
+        function calculate_payble_amount(){
+          var fee = document.getElementById("fee").value;
+          var fee1 =parseInt(fee)
+          var Previous = document.getElementById("previous_balance").value;
+          var previous1 = parseInt(Previous)
+          var payable_amount = fee1 + previous1
+          document.getElementById("payable_amount").value = payable_amount
+        }
+        function calculate_balance(){ 
+            var paid = document.getElementById("paid_amount").value;
+            var paid1 =parseInt(paid)
+            var previous_balance = document.getElementById("previous_balance").value;
+            var previous_balance =parseInt(previous_balance)
+            var balance = previous_balance - paid1 
+            document.getElementById("balance_amount").value = balance
+        }    
+        
+
+    </script>
+{% endblock content %}
+

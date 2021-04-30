@@ -1,0 +1,46 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+{% block content %}
+<main role="main" class="main-content">
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12">
+              <h2 class="h3 mb-0 page-title">Add Plan</h2>
+        </div>
+          </div>
+          <form method="POST">
+            {% csrf_token %}
+            <hr class="my-4">
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="custom-select">Gender</label>
+                <select class="custom-select gender" id="gender" name="gender">
+                  <option>Male</option>
+                  <option>Female</option>
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="firstname">Plan Name</label>
+                <input type="text" id="firstname" name="name" class="form-control" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="firstname">Price</label>
+                <input type="number" id="firstname" name="price" class="form-control" required>
+              </div>
+            <div class="form-group col-md-4">
+                <label for="inputPhone">Registration Fee</label>
+                <input type="number" class="form-control" name="registration" id="inputPhone" value="0" required>
+              </div>
+            </div>
+            <hr class="my-4">
+              <div class="col-auto ">
+                <button type = "submit" class = "btn btn-primary">Create</button>
+            </div>
+          </form>
+        </div> <!-- .col-12 -->
+      </div> <!-- .row -->
+    </div> <!-- .container-fluid -->
+  </main>
+{% endblock content %}

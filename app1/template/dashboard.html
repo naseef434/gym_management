@@ -1,0 +1,79 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+
+<main role="main" class="main-content">
+    <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12">
+          <h3 class="page-title">Dashboard</h3>
+        </div> <!-- .col-12 -->
+      </div> <!-- .row -->
+    </div> <!-- .container-fluid -->
+    {% for message in messages %}
+  <div class="alert alert-danger" id="alert" role="alert">
+    <p>{{message}}</p>
+  </div>
+ {% endfor %}
+          <!-- info small box -->
+          <div class="row">
+           
+            <div class="col-md-4 mb-4">
+              <div class="card shadow">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    
+                    <div class="col">
+                    
+                      <span class="h2 mb-0">{{ plans }}</span>
+                      
+                      <p class="small text-muted mb-0">Plans</p>
+                      <span class="badge badge-pill badge-success">Created</span>
+                    </div>
+                 
+                    <div class="col-auto">
+                      <span class="fe fe-32 fe-clipboard text-muted mb-0"></span>
+                    </div>
+                
+                  </div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="col-md-4 mb-4">
+              <div class="card shadow">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <span class="h2 mb-0">{{ student }}</span>
+                      <p class="small text-muted mb-0">Student</p>
+                      <span class="badge badge-pill badge-warning">Registred</span>
+                    </div>
+                    <div class="col-auto">
+                      <span class="fe fe-32 fe-users text-muted mb-0"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 mb-4">
+              <div class="card shadow">
+                <div class="card-body">
+                  <div class="row align-items-center">
+                    <div class="col">
+                      <span class="h2 mb-0">{{expenses}}</span>
+                      <p class="small text-muted mb-0">Expeces</p>
+                      <span class="badge badge-pill badge-danger">Created</span>
+                    </div>
+                    <div class="col-auto">
+                      <span class="fe fe-32 fe-activity text-muted mb-0"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> <!-- end section -->
+          </main>
+
+{% endblock %}

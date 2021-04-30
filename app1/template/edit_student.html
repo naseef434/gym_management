@@ -1,0 +1,162 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+
+<main role="main" class="main-content">
+
+  
+  <div class="container-fluid">
+      <div class="row justify-content-center">
+        <div class="col-12">
+              <h2 class="h3 mb-0 page-title">Edit Student</h2>
+        </div>
+          </div>
+          <form method="POST" action="{% url 'update_student' student.id %}">
+            {% csrf_token %}
+            <hr class="my-4">
+           
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="custom-select">Gender</label>
+                <select class="custom-select gender" id="gender" name="gender" >
+                  <option>{{student.plan.gender}}</option>
+                  <option>Female</option>
+                 
+                </select>
+              </div>
+              <div class="form-group col-md-4">
+                <label for="custom-select">Select Plan</label>
+                <select class="custom-select plan" id="plan" name="plan">
+                <option>{{student.plan.planName}}</option>
+                 <option></option> 
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="firstname">Name</label>
+                <input type="text"  name="name"  id="name" class="form-control" value="{{student.name}}" required>
+              </div>
+            <div class="form-group col-md-4">
+                <label for="inputPhone">Phone</label>
+                <input type="text" class="form-control" name="phone" id="inputPhone" value="{{student.phone}}" required>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="inputEmail4">Address</label>
+                <input type="text" class="form-control" name="address" id="inputEmail4" value="{{student.address}}">
+              </div>
+              <div class="form-group col-md-4">
+                <label for="inputEmail4">Age</label>
+                <input type="number" class="form-control" name="age" id="inputEmail4" value="{{student.age}}" required>
+              </div>  
+            </div>
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                <label for="custom-placeholder">Joining Date</label>
+                <input class="form-control input-placeholder" id="custom-placeholder" name="joiningDate" value="{{student.joiningDate}}" type="date" required>
+              </div>
+              <div class="form-group col-md-4">
+                  <label for="inputPhone">Payable amount</label>
+                  <input type="text" class="form-control" name="payable_amount" id="payable_amount" readonly>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                  <label for="inputEmail4">Paid amount</label>
+                  <input type="text" class="form-control paid" name="paidAmount" id="paid_amount" value="{{student.paidAmount}}" onchange="calculate_balance_amount()">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputPhone">Balance Amount</label>
+                    <input type="text" class="form-control" name="balanceAmount" id="balance_amount" value="{{student.balance}}">
+                  </div> 
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-4">
+                    <label for="inputEmail4">Discription</label>
+                    <textarea class="form-control" name="discription" id="inputEmail4" alue="{{student.discription}}"></textarea>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <br><br>
+                    <button type = "submit" class = "btn btn-primary float-right">Primary Button</button>
+                  </div>
+                  </div>  
+            <hr class="my-4">
+           
+          </form>
+        </div> <!-- .col-12 -->
+      </div> <!-- .row -->
+    </div> <!-- .container-fluid -->
+  
+    </main>
+   
+    <script>
+        $("#gender").click(function () {
+          $.ajax({
+            url: '/get-plan/',
+            type: "POST",
+            data: {
+                  'csrfmiddlewaretoken': '{{csrf_token}}',
+                  'gender': $(this).val()
+                },
+            dataType: 'json',
+            success: function (data) {
+              $("#plan").empty()
+              data.plan.forEach(element => {
+                var option = $('<option></option>').attr("value", element.id).text(element.name);
+                $("#plan").append(option);
+              });
+              
+            }
+          });
+        });  
+      </script>
+  
+  
+   <script>
+     $(document).ready(function(){
+       var gender  = $('#gender').val();
+      
+      $("#plan").click(function () {
+        
+        var plan = $(this).val()
+        
+        var data = {
+              'csrfmiddlewaretoken': '{{csrf_token}}',
+               gender,
+               plan
+              }
+          //console.log(data)
+        $.ajax({
+            url: '/get_price/',
+            type: "POST",
+            data: data,
+            dataType: 'json',
+            success: function (data) {
+              $('#payable_amount').val(data.price);
+              //console.log(data.price)
+              
+            }
+          });
+      });
+    });
+    </script>
+    
+    <script>
+      function calculate_balance_amount(){
+        var payable_amount = document.getElementById("payable_amount").value;
+        var paid_amount = document.getElementById("paid_amount").value;
+        console.log(payable_amount)
+        console.log(paid_amount)
+        var balance = payable_amount - paid_amount
+        document.getElementById("balance_amount").value = balance
+  
+      }
+    </script>
+    
+   
+ 
+{% endblock content %}
+

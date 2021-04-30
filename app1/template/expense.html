@@ -1,0 +1,56 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+{% block content %}
+<main role="main" class="main-content">
+    <div class="row">
+      <div class="col-lg-4">
+      </div>
+         <div class="col-lg-4">
+            <!-- alert message-->
+              {% for message in messages %}
+                <div class="alert alert-success " id="alert" role="alert">
+                  <p>{{message}}</p>
+                </div>
+              {% endfor %}
+            <!--end alert message-->
+         </div>
+         <div class="col-lg-4">
+         </div>
+        <div class="col-md-12 my-4">
+          <h2 class="h4 mb-1">Expense</h2>
+          <div class="card shadow">
+            <div class="card-body">
+              <!-- table -->
+              <table class="table table-hover table-borderless border-v">
+                <a href="{% url 'add_expense' %}">
+                <button type="button"  class="btn mb-2 btn-primary float-right"><span class="fe fe-plus fe-16 mr-2"></span>Add Expense</button></a>
+                <thead class="thead-dark">
+                  <tr>
+                    <th>Id</th>
+                    <th>name</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                   {% for expense in expense %} 
+                  <tr class="accordion-toggle collapsed" id="c-2474" data-toggle="collapse" data-parent="#c-2474" href="#collap-2474">
+                    <td>{{expense.id}}</td>
+                    <td>{{expense.name}}</td>
+                    <td>{{expense.amount}}</td>
+                    <td>{{expense.date}}</td>
+                    <td>
+                      <a href="/delete_expense/{{ expense.id }}" onclick="window.mytest()"><span class="fe fe-trash fe-12 mr-4"></span></a>
+                    </td>
+                  </tr>     
+                 {% endfor %}     
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div> 
+    <!-- end section -->
+   </main>          
+{% endblock %}
