@@ -243,37 +243,6 @@ def fee_paid(request,id):
         return redirect('login')
 #fee management end here
 
-
-#listing all exp
-def expenses(request):
-    if request.user.is_authenticated:     
-        exp = Expense.objects.all()
-        return render(request, 'expense.html',{'expense':exp})
-    else:
-        return redirect('login')
-#add new exp
-def add_expense(request):
-    if request.user.is_authenticated:   
-        if request.method == 'POST':
-            expense = Expense()
-            expense.name  = request.POST['exp_name']
-            expense.amount = request.POST['amount']
-            expense.save()
-            return redirect('expenses')
-        return render(request, 'add_expenses.html')
-    else:
-        return redirect('login')
-
-#delete exp
-def delete_expense(request, id):  
-    if request.user.is_authenticated:   
-        exp = Expense.objects.get(id=id)  
-        exp.delete()  
-        messages.info(request,"Deleted Successfully")
-        return redirect('expenses')
-    else:
-        return redirect('login')
-
 #listing all fee paid student
 def fee_paid1(request):
     if not request.user.is_authenticated:
@@ -293,7 +262,7 @@ def fee_unpaid(request):
             if student_last_paid_date.feeStatus == True:
                 out = today - student_last_paid_date.lastFeePaid
                 time_between_insertion = date.today() - student_last_paid_date.lastFeePaid
-                if  time_between_insertion.days>28:
+                if  time_between_insertion.days>30:
                     data_list.append(student_last_paid_date)
                 
             else:
@@ -322,7 +291,21 @@ def delete_user(request, id):
         return redirect('user_list')
     return redirect('login')
 
+#profiler
+def profile(request,id):
+    student = StudentRegistration.objects.get(id=id)
+    fees_details = fees.objects.get(student=id)
+    print(fees)
+    return render(request, 'profile.html',{'students':student,'fees':fees_details})
+   
+
+
+
 #logout
 def logout(request):
     auth.logout(request)
     return redirect('login')
+
+#page 404
+def notFound(request):
+    return render(request, '404.html')

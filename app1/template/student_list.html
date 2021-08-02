@@ -36,6 +36,7 @@
                 <thead class="thead-dark">
                   <tr>
                     <th>SN</th>
+                    <th>View</th>
                     <th>Name</th>
                     <th>Plan</th>    
                     <th>Phone</th>
@@ -49,6 +50,7 @@
                   {% for student in students  %}
                   <tr>
                     <td>{{student.id}}</td>
+                    <td><a href="/profile/{{ student.id}}" ><span class="fe fe-24 fe-align-justify"></span></a></td>
                     <td>{{student.name}}</td>
                     <td>{{student.plan}}</td>
                     <td>{{student.phone}}</td>

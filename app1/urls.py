@@ -23,13 +23,11 @@ urlpatterns = [
     path('fee_paid/<int:id>',views.fee_paid,name="fee_paid"),
     path('fee_paid1',views.fee_paid1,name="fee_paid1"),
     path('fee_unpaid',views.fee_unpaid,name="fee_unpaid"),
-    path('expenses/', views.expenses, name="expenses"),
-    path('add_expense', views.add_expense, name="add_expense"),
-    path('delete_expense/<int:id>',views.delete_expense,name="delete_expense"), 
+ 
     # path('settings/',views.settings,name="settings"),
     path('user_list',views.user,name="user_list"),
     path('delete_user/<int:id>', views.delete_user,name="delete_user"), 
-
+    path('profile/<int:id>', views.profile, name="profile"),
     path('logout',views.logout,name="logout"), 
-    
+    path('notFound', views.notFound, name="notFound")
 ]

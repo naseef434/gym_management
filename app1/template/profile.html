@@ -1,0 +1,59 @@
+{% extends 'base_layout.html'%}
+{% load static %}
+
+{% block content %}
+
+<main role="main" class="main-content">
+    <div class="row">
+        <div class="col-md-12 my-4">
+          <div class="card shadow">
+            <div class="card-body">
+              <!-- table -->
+              <table class="table table-hover table-borderless border-v">
+                <h2 class="h4 mb-1">Student Details</h2>
+                <br>
+                <a href="{% url 'student' %}"> 
+                    <button type="button" class="btn mb-2 btn-primary float-left"><span class="fe fe-24 fe-arrow-left"></span></button></a>
+                <thead class="thead-dark">
+
+                  <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>mobile number</th>
+                    <th>Plan Name</th>
+                    <th>Age</th>
+                    <th>Gender</th>
+                    <th>Address</th>
+                    <th>Date Joinig</th>
+                    <th>Last Fee Paid</th>
+                    <th>Balance</th>
+                    <th>Discription</th>
+                  </tr>
+                </thead>
+                <tbody>
+                 
+                  <tr class="accordion-toggle collapsed" id="c-2474" data-toggle="collapse" data-parent="#c-2474" href="#collap-2474">
+                    <td>{{students.id}}</td>
+                    <td>{{students.name}}</td>
+                    <td>{{students.phone}}</td>
+                    <td>{{students.plan.planName}}</td>
+                    <td>{{students.age}}</td>
+                    <td>{{students.plan.gender}}</td>
+                    <td>{{students.address}}</td>
+                    <td>{{students.joiningDate}}</td>
+                    <td>{{fees.lastFeePaid}}</td>
+                    <td>{{fees.balance}}</td>
+                    <td>{{students.discription}}</td>
+                  
+                  </tr>     
+                
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>  
+</main>
+
+
+{% endblock %}
