@@ -293,11 +293,13 @@ def delete_user(request, id):
 
 #profiler
 def profile(request,id):
-    student = StudentRegistration.objects.get(id=id)
-    fees_details = fees.objects.get(student=id)
-    print(fees)
-    return render(request, 'profile.html',{'students':student,'fees':fees_details})
-   
+    try:
+        student = StudentRegistration.objects.get(id=id)
+        fees_details = fees.objects.get(student=id)
+        print(fees)
+        return render(request, 'profile.html',{'students':student,'fees':fees_details})
+    except Exception:
+       return render(request, "404.html")
 
 
 
