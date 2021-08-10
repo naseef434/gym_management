@@ -37,26 +37,20 @@ def login(request):
 #dashboard
 def dashboard(request):
     if request.user.is_authenticated:
-        try:
-            student =  StudentRegistration.objects.all().count()
-            plans =  Plan.objects.all().count()
-            expenses = Expense.objects.all().count()
-            context = {'student':student,'plans':plans,'expenses':expenses}
-            return render(request, 'dashboard.html',context)
-        except Exception:
-            return render(request, "404.html")
+        student =  StudentRegistration.objects.all().count()
+        plans =  Plan.objects.all().count()
+        expenses = Expense.objects.all().count()
+        context = {'student':student,'plans':plans,'expenses':expenses}
+        return render(request, 'dashboard.html',context)
     else:
         return redirect(login)
 #plans
 def plans(request):
-     if request.user.is_authenticated:
-        try:
-            plans = Plan.objects.all()
-            return render(request,'plans.html',{'plans':plans})
-        except Exception:
-            return render(request, "404.html")
-     else:
-         return redirect(login)
+    if request.user.is_authenticated:
+        plans = Plan.objects.all()
+        return render(request,'plans.html',{'plans':plans})    
+    else:
+        return redirect(login)
    
 #add plans
 def add_plan(request):
