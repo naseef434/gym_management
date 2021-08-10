@@ -9,11 +9,10 @@ from datetime import timedelta
 from django.http import JsonResponse
 import json
 
-
-
 #landing 
 def index(request):
     return render(request, "index.html")
+
 #login
 def login(request):
     if request.user.is_authenticated:
@@ -38,21 +37,24 @@ def login(request):
 #dashboard
 def dashboard(request):
     if request.user.is_authenticated:
-        student =  StudentRegistration.objects.all().count()
-        plans =  Plan.objects.all().count()
-        expenses = Expense.objects.all().count()
-        context = {'student':student,'plans':plans,'expenses':expenses}
-        return render(request, 'dashboard.html',context)
+        try:
+            student =  StudentRegistration.objects.all().count()
+            plans =  Plan.objects.all().count()
+            expenses = Expense.objects.all().count()
+            context = {'student':student,'plans':plans,'expenses':expenses}
+            return render(request, 'dashboard.html',context)
+        except Exception:
+            return render(request, "404.html")
     else:
         return redirect(login)
-    
-   
-
 #plans
 def plans(request):
      if request.user.is_authenticated:
-         plans = Plan.objects.all()
-         return render(request,'plans.html',{'plans':plans})
+        try:
+            plans = Plan.objects.all()
+            return render(request,'plans.html',{'plans':plans})
+        except Exception:
+            return render(request, "404.html")
      else:
          return redirect(login)
    
@@ -123,50 +125,47 @@ def get_price(request):
 #registrating student after he choose the plan
 def add_student(request):
     if request.user.is_authenticated:
-
         if request.method == "POST":        
             #posting to student registration model
-            student = StudentRegistration()
-            plan = Plan.objects.get(id=request.POST['plan'])
-            student.plan  =  plan
-            student.name  =  request.POST['name']
-            student.phone =  request.POST['phone']
-            student.address  = request.POST['address']
-            student.age = request.POST['age']
-            date = request.POST['joiningDate']
-            student.joiningDate = date
-            student.discription = request.POST['discription']
-            if StudentRegistration.objects.filter(name = request.POST['name'],phone = request.POST['phone']).exists():
-                messages.success(request, 'student already exist!')
-                return redirect('student')
-            else:
-                print('hhyeyyeyey')
-                student.save()
-                #end student registration model
-        
-                #updating fees model also
-                
-                last_id = StudentRegistration.objects.latest('id')
-                id = last_id.id
-                student_id  = StudentRegistration.objects.get(id=id)
-                fee = fees()
-                fee.paidAmount = int(request.POST['paidAmount'])
-                balance = int(request.POST['balanceAmount'])
-               
-                #status checking
-                if balance == 0:
-                    fee.feeStatus = True
-                   
+            try:
+                student = StudentRegistration()
+                plan = Plan.objects.get(id=request.POST['plan'])
+                student.plan  =  plan
+                student.name  =  request.POST['name']
+                student.phone =  request.POST['phone']
+                student.address  = request.POST['address']
+                student.age = request.POST['age']
+                date = request.POST['joiningDate']
+                student.joiningDate = date
+                student.discription = request.POST['discription']
+                if StudentRegistration.objects.filter(name = request.POST['name'],phone = request.POST['phone']).exists():
+                    messages.success(request, 'student already exist!')
+                    return redirect('student')
                 else:
-                    fee.feeStatus = False
-                    
-                fee.balance = balance
-                fee.lastFeePaid = date
+                    student.save()
+                    last_id = StudentRegistration.objects.latest('id')
+                    id = last_id.id
+                    student_id  = StudentRegistration.objects.get(id=id)
+                    fee = fees()
+                    fee.paidAmount = int(request.POST['paidAmount'])
+                    balance = int(request.POST['balanceAmount'])
                 
-                fee.student = student_id
-                fee.save() 
-                messages.success(request, 'student added successfully')
-                return redirect('student')
+                    #status checking
+                    if balance == 0:
+                        fee.feeStatus = True
+                    
+                    else:
+                        fee.feeStatus = False
+                        
+                    fee.balance = balance
+                    fee.lastFeePaid = date
+                    
+                    fee.student = student_id
+                    fee.save() 
+                    messages.success(request, 'student added successfully')
+                    return redirect('student')
+            except Exception:
+                return render(request, "404.html")
         return render(request, 'add_student.html')
     else:
         return redirect('login')
@@ -225,23 +224,26 @@ def balancePay(request,id):
         return redirect('login')
     
 def fee_paid(request,id):
-    if request.method == "POST":
-        fee = fees.objects.get(student=id)
-        # fee.paidAmount = int(request.POST['paid_amount'])
-        paid_amount = int(request.POST['paid_amount'])
-        paid = fee.paidAmount + paid_amount
-        fee.paidAmount  = paid
-        balance = int(request.POST['balanceAmount'])
-        if balance == 0:
-            fee.feeStatus = True
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            fee = fees.objects.filter(student=id).latest('lastFeePaid')
+            print(fee)
+            fee.paidAmount = int(request.POST['paid_amount'])
+            paid_amount = int(request.POST['paid_amount'])
+            paid = fee.paidAmount + paid_amount
+            fee.paidAmount  = paid
+            balance = int(request.POST['balanceAmount'])
+            if balance == 0:
+                fee.feeStatus = True
+            else:
+                fee.feeStatus = False
+            fee.balance = balance   
+            fee.save()
+            return redirect('fee_outstand')
         else:
-            fee.feeStatus = False
-        fee.balance = balance   
-        fee.save()
-        return redirect('fee_outstand')
+            return redirect('fee_outstand')
     else:
-        return redirect('fee_outstand')
-
+        return redirect('login')
 #listing all fee paid student
 def fee_paid1(request):
     if not request.user.is_authenticated:
@@ -263,7 +265,6 @@ def fee_unpaid(request):
                 time_between_insertion = date.today() - student_last_paid_date.lastFeePaid
                 if  time_between_insertion.days>30:
                     data_list.append(student_last_paid_date)
-                
             else:
                 data_list.append(student_last_paid_date)
                 out = today - student_last_paid_date.lastFeePaid
@@ -292,21 +293,42 @@ def delete_user(request, id):
 
 #profiler
 def profile(request,id):
-    try:
-        student = StudentRegistration.objects.get(id=id)
-        fees_details = fees.objects.get(student=id)
- 
-        return render(request, 'profile.html',{'students':student,'fees':fees_details})
-    except Exception:
-       return render(request, "404.html")
+    if request.user.is_authenticated:
+        try:
+            student = StudentRegistration.objects.get(id=id)
+            fees_details = fees.objects.filter(student=id).latest('lastFeePaid')
+            print()
+            return render(request, 'profile.html',{'students':student,'fees':fees_details})
+        except Exception:
+            return render(request, "404.html")
+    else:
+        return redirect('login')
 
 #admisiion fee paid 
 def feePayment(request, id):
-    fee_payment = fees.objects.filter(student=id).latest('lastFeePaid')
-    return render(request, 'feePayment.html',{'fees':fee_payment})
+    if request.user.is_authenticated:
+        fee_payment = fees.objects.filter(student=id).latest('lastFeePaid')
+        return render(request, 'feePayment.html',{'fees':fee_payment})
+    else:
+        return redirect('login')
 
 def feePaid(request,id):
-    return HttpResponse(id)
+    if request.user.is_authenticated:
+        student = StudentRegistration.objects.get(id=id)
+        fee = fees()
+        balance = int(request.POST['balanceAmount'])
+        if balance == 0:
+            fee.feeStatus = True
+        else:
+            fee.feeStatus = False
+        fee.balance = balance   
+        fee.lastFeePaid = request.POST['date']
+        fee.paidAmount = request.POST['paid_amount']
+        fee.student = student
+        fee.save()
+        return redirect('fee_outstand')
+    else:
+        return redirect('login')
 #logout
 def logout(request):
     auth.logout(request)
