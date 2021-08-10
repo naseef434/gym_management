@@ -18,12 +18,19 @@ urlpatterns = [
     path('update_student/<int:id>',views.update_student,name="update_student"),
     path('delete_student/<int:id>', views.delete_student,name="delete_student"), 
 
-    path('fee_payment_request/<int:id>',views.fee_payment_request,name="fee_payment_request"),
+
+
+    path('balance_pay/<int:id>',views.balancePay,name="fee_payment_request"),
+    
     
     path('fee_paid/<int:id>',views.fee_paid,name="fee_paid"),
-    path('fee_paid1',views.fee_paid1,name="fee_paid1"),
-    path('fee_unpaid',views.fee_unpaid,name="fee_unpaid"),
+    path('fee_paid',views.fee_paid1,name="fee_paid1"),
+    path('fee_outstanding',views.fee_unpaid,name="fee_outstand"),
  
+    path('feePayment/<int:id>',views.feePayment, name="feePayment"),
+    path('feePaid/<int:id>',views.feePaid,name="feePaid"),
+
+
     # path('settings/',views.settings,name="settings"),
     path('user_list',views.user,name="user_list"),
     path('delete_user/<int:id>', views.delete_user,name="delete_user"), 

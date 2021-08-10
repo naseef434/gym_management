@@ -56,7 +56,7 @@
                  <td>{{unpaid.balance}}</td>
                  <td><span class="badge badge-pill badge-warning">pending</span></td>
                  <td><a href="{% url 'fee_payment_request' unpaid.student.id %}" type="button" class="btn mb-2 btn-info">Balance</a>
-                  <button type="button" class="btn mb-2 btn-dark">Fee</button></td>
+                  <a href="{% url 'feePayment' unpaid.student.id %}" type="button" class="btn mb-2 btn-dark">Fee</button></td>
                 
               {% endfor %}
                 </tbody>

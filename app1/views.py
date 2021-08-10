@@ -217,7 +217,7 @@ def delete_student(request, id):
 
 
 #fee  management start here 
-def fee_payment_request(request,id):
+def balancePay(request,id):
     if request.user.is_authenticated:
         fee_payment = fees.objects.filter(student=id).latest('lastFeePaid')
         return render(request, 'fee_payment.html',{'fees':fee_payment})
@@ -225,23 +225,22 @@ def fee_payment_request(request,id):
         return redirect('login')
     
 def fee_paid(request,id):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            fee = fees()
-            fee.paidAmount = int(request.POST['paid_amount'])
-            balance = int(request.POST['balanceAmount'])
-            fee.student = StudentRegistration.objects.get(id=id)
-            if balance == 0:
-                fee.feeStatus = True
-            else:
-                fee.feeStatus = False
-            fee.balance = balance
-            fee.lastFeePaid = request.POST['date']
-            fee.save()
-            return redirect('student')
+    if request.method == "POST":
+        fee = fees.objects.get(student=id)
+        # fee.paidAmount = int(request.POST['paid_amount'])
+        paid_amount = int(request.POST['paid_amount'])
+        paid = fee.paidAmount + paid_amount
+        fee.paidAmount  = paid
+        balance = int(request.POST['balanceAmount'])
+        if balance == 0:
+            fee.feeStatus = True
+        else:
+            fee.feeStatus = False
+        fee.balance = balance   
+        fee.save()
+        return redirect('fee_outstand')
     else:
-        return redirect('login')
-#fee management end here
+        return redirect('fee_outstand')
 
 #listing all fee paid student
 def fee_paid1(request):
@@ -296,13 +295,18 @@ def profile(request,id):
     try:
         student = StudentRegistration.objects.get(id=id)
         fees_details = fees.objects.get(student=id)
-        print(fees)
+ 
         return render(request, 'profile.html',{'students':student,'fees':fees_details})
     except Exception:
        return render(request, "404.html")
 
+#admisiion fee paid 
+def feePayment(request, id):
+    fee_payment = fees.objects.filter(student=id).latest('lastFeePaid')
+    return render(request, 'feePayment.html',{'fees':fee_payment})
 
-
+def feePaid(request,id):
+    return HttpResponse(id)
 #logout
 def logout(request):
     auth.logout(request)
